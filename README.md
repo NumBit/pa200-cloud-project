@@ -1,3 +1,5 @@
+[![Deploy to Azure Web App](https://github.com/ndopj/pa200-cloud-project/actions/workflows/deploy-to-azure-web-app.yml/badge.svg)](https://github.com/ndopj/pa200-cloud-project/actions/workflows/deploy-to-azure-web-app.yml)
+
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
