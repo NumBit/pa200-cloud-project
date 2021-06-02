@@ -13,7 +13,7 @@ env:
   LOCATION: "West Europe"
   HOSTINGPLANNAME: "pa200-mnp-project-plan"
   APPINSIGHTLOCATION: "West Europe"
-  SKU: "S1 Standard"
+  SKU: "B1 Basic"
 
 jobs:
   build-and-deploy:
