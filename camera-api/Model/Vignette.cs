@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Azure.Cosmos.Table;
 
-namespace core_api.Model
+namespace camera_api.Model
 {
     public class Vignette : TableEntity
     {

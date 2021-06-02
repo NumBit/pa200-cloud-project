@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
 
-namespace core_api
+namespace camera_api
 {
     public class TableStore
     {

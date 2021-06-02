@@ -2,17 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using core_api.Model;
+using camera_api.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Table;
 
-namespace core_api.Controllers
+namespace camera_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class VignetteController : ControllerBase
     {
         CloudTable table = TableStore.GetTable("vignettes");
+
+        [HttpGet("/rng")]
+        public int GetRng()
+        {
+            var rng = new Random();
+            return rng.Next(1,100);
+        }
+
 
         [HttpGet]
         public async Task<IEnumerable<Vignette>> GetAll()
@@ -34,6 +42,7 @@ namespace core_api.Controllers
         {
             return await getVignettesByEcv(ecv);
         }
+
 
         [HttpGet("checkValidVignette/{ecv}")]
         public async Task<bool> CheckValidVignette(string ecv)

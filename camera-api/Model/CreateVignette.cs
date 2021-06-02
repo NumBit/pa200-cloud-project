@@ -1,6 +1,6 @@
 using System;
 
-namespace core_api.Model
+namespace camera_api.Model
 {
     public class CreateVignette
     {

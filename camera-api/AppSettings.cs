@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 
-namespace core_api{
+namespace camera_api
+{
     public class AppSettings
     {
         public string StorageConnectionString { get; set; }
