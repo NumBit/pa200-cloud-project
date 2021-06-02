@@ -35,12 +35,12 @@ jobs:
       with:
         name: "Settings.json"
         json: ${{ secrets.DB_CONNECTION_JSON }}
-        dir: 'core-api/'
+        dir: 'camera-api/'
 
     # Run dotnet build and publish
     - name: dotnet build unit test and publish
       run: |
-        cd core-api
+        cd camera-api
         dotnet restore
         dotnet build --configuration Release
         dotnet publish -c Release -o release-app
@@ -54,4 +54,4 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        package: './core-api/release-app'
+        package: './camera-api/release-app'
