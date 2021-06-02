@@ -6,14 +6,14 @@ on:
       - master
 
 env:
-  AZURE_WEBAPP_NAME: "pa200-mnp-api"    # set this to your application's name
+  AZURE_WEBAPP_NAME: "pa200-mnp-camera-api"    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'             # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '5.0.203'                  # set this to the dot net version to use
   RESOURCEGROUPNAME: "pa200-mnp-project"
   LOCATION: "West Europe"
-  HOSTINGPLANNAME: "pa200-api-service-plan"
+  HOSTINGPLANNAME: "pa200-mnp-project-plan"
   APPINSIGHTLOCATION: "West Europe"
-  SKU: "F1 Free"
+  SKU: "B1 Basic"
 
 jobs:
   build-and-deploy:
