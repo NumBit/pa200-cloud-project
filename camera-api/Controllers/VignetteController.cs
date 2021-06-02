@@ -65,6 +65,31 @@ namespace camera_api.Controllers
             return false;
         }
 
+        [HttpGet("/checkRandom")]
+        public async Task<bool> CheckRandom()
+        {
+            var ecvs = new List<String>
+            {"SL123AB", "BA123AB"};
+            var rng = new Random();
+            var ecv = ecvs[rng.Next(0,2)];
+            var vignettes = await getVignettesByEcv(ecv);
+            foreach (var vignette in vignettes)
+            {
+                if (vignette.ValidDays != -1 &&
+                    vignette.ValidFrom <= DateTime.Now &&
+                    vignette.ValidFrom.AddDays(vignette.ValidDays) >= DateTime.Now)
+                {
+                    return true;
+                }
+                if (vignette.ValidDays == -1 &&
+                    vignette.ValidFrom.Year == DateTime.Now.Year)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         // PUT api/<ECVController>/5
         [HttpPut]
