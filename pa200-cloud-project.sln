@@ -1,6 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core-api", "core-api\core-api.csproj", "{3D0DC4F8-B977-4805-98A9-727E6E40D7A8}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "core-api", "core-api\core-api.csproj", "{3D0DC4F8-B977-4805-98A9-727E6E40D7A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "front-end", "front-end\front-end.csproj", "{784A09FC-9601-4029-AC54-A4DCA2EE2047}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "camera-api", "camera-api\camera-api.csproj", "{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +19,19 @@ Global
 		{3D0DC4F8-B977-4805-98A9-727E6E40D7A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D0DC4F8-B977-4805-98A9-727E6E40D7A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D0DC4F8-B977-4805-98A9-727E6E40D7A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{784A09FC-9601-4029-AC54-A4DCA2EE2047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{784A09FC-9601-4029-AC54-A4DCA2EE2047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{784A09FC-9601-4029-AC54-A4DCA2EE2047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{784A09FC-9601-4029-AC54-A4DCA2EE2047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C1BEE80-9607-42AF-A19F-2C2C88FA3B47}
 	EndGlobalSection
 EndGlobal
