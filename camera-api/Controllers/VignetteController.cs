@@ -22,7 +22,7 @@ namespace camera_api.Controllers
         public int GetRng()
         {
             var rng = new Random();
-            return rng.Next(1,100);
+            return rng.Next(1, 100);
         }
 
         [HttpGet]
@@ -74,21 +74,20 @@ namespace camera_api.Controllers
                                 credentials to create a service SAS.");
                 return null;
             }
-                // Create a SAS token that's valid for one hour.
-                BlobSasBuilder sasBuilder = new BlobSasBuilder()
-                {
-                    Resource = "b",
-                };
-            
-                sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(10);
-                sasBuilder.SetPermissions((BlobContainerSasPermissions.Create));
+            BlobSasBuilder sasBuilder = new BlobSasBuilder()
+            {
+                Resource = "b",
+            };
+
+            sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(10);
+            sasBuilder.SetPermissions((BlobContainerSasPermissions.Create));
 
 
-                Uri sasUri = containerClient.GenerateSasUri(sasBuilder);
-                Console.WriteLine("SAS URI for blob container is: {0}", sasUri);
-                Console.WriteLine();
+            Uri sasUri = containerClient.GenerateSasUri(sasBuilder);
+            Console.WriteLine("SAS URI for blob container is: {0}", sasUri);
+            Console.WriteLine();
 
-                return new VignetteValidationResponse(false, sasUri);
+            return new VignetteValidationResponse(false, sasUri);
 
         }
 
@@ -98,7 +97,7 @@ namespace camera_api.Controllers
             var ecvs = new List<String>
             {"SL123AB", "BA123AB"};
             var rng = new Random();
-            var ecv = ecvs[rng.Next(0,2)];
+            var ecv = ecvs[rng.Next(0, 2)];
             var vignettes = await getVignettesByEcv(ecv);
             foreach (var vignette in vignettes)
             {
