@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using camera_api.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Table;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 
 namespace camera_api.Controllers
 {
@@ -12,15 +14,16 @@ namespace camera_api.Controllers
     [ApiController]
     public class VignetteController : ControllerBase
     {
-        CloudTable table = TableStore.GetTable("vignettes");
+        private CloudTable table = TableStore.GetTable("vignettes");
+        private string connectionString = AppSettings.LoadAppSettings().StorageConnectionString;
+        private string containerName = "camera-photos";
 
-        [HttpGet("/rng")]
+        [HttpGet("rng")]
         public int GetRng()
         {
             var rng = new Random();
             return rng.Next(1,100);
         }
-
 
         [HttpGet]
         public async Task<IEnumerable<Vignette>> GetAll()
@@ -45,7 +48,7 @@ namespace camera_api.Controllers
 
 
         [HttpGet("checkValidVignette/{ecv}")]
-        public async Task<bool> CheckValidVignette(string ecv)
+        public async Task<VignetteValidationResponse> CheckValidVignette(string ecv)
         {
             var vignettes = await getVignettesByEcv(ecv);
             foreach (var vignette in vignettes)
@@ -54,15 +57,39 @@ namespace camera_api.Controllers
                     vignette.ValidFrom <= DateTime.Now &&
                     vignette.ValidFrom.AddDays(vignette.ValidDays) >= DateTime.Now)
                 {
-                    return true;
+                    return new VignetteValidationResponse(true, null);
                 }
                 if (vignette.ValidDays == -1 &&
                     vignette.ValidFrom.Year == DateTime.Now.Year)
                 {
-                    return true;
+                    return new VignetteValidationResponse(true, null);
                 }
             }
-            return false;
+            var uploadFileName = $"{ecv.ToUpper()}-{DateTime.Now.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'-'fffffff'Z'")}.jpg";
+            BlobClient containerClient = new BlobClient(connectionString, containerName, uploadFileName);
+
+            if (!containerClient.CanGenerateSasUri)
+            {
+                Console.WriteLine(@"BlobContainerClient must be authorized with Shared Key 
+                                credentials to create a service SAS.");
+                return null;
+            }
+                // Create a SAS token that's valid for one hour.
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    Resource = "b",
+                };
+            
+                sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(10);
+                sasBuilder.SetPermissions((BlobContainerSasPermissions.Create));
+
+
+                Uri sasUri = containerClient.GenerateSasUri(sasBuilder);
+                Console.WriteLine("SAS URI for blob container is: {0}", sasUri);
+                Console.WriteLine();
+
+                return new VignetteValidationResponse(false, sasUri);
+
         }
 
         [HttpGet("/checkRandom")]
@@ -167,3 +194,4 @@ namespace camera_api.Controllers
 
     }
 }
+
