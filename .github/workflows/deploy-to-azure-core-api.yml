@@ -1,0 +1,57 @@
+name: Deploy camera api to Azure 
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  AZURE_WEBAPP_NAME: "pa200-mnp-core-api"    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'             # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '5.0.203'                  # set this to the dot net version to use
+  RESOURCEGROUPNAME: "pa200-mnp-project"
+  LOCATION: "West Europe"
+  HOSTINGPLANNAME: "pa200-mnp-project-plan"
+  APPINSIGHTLOCATION: "West Europe"
+  SKU: "B1 Basic"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the repo
+    - uses: actions/checkout@master
+
+    # Setup .NET Core SDK
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }} 
+
+    # Create connection string
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@1.1.2
+      with:
+        name: "Settings.json"
+        json: ${{ secrets.DB_CONNECTION_JSON }}
+        dir: 'core-api/'
+
+    # Run dotnet build and publish
+    - name: dotnet build unit test and publish
+      run: |
+        cd core-api
+        dotnet restore
+        dotnet build --configuration Release
+        dotnet publish -c Release -o release-app
+    - name: Login to Azure
+      uses: azure/login@v1
+      continue-on-error: false
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Deploy core api'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: './core-api/release-app'
