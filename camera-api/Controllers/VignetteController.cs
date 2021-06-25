@@ -24,6 +24,13 @@ namespace camera_api.Controllers
             var rng = new Random();
             return rng.Next(1, 100);
         }
+        
+        [HttpGet("/loaderio-4dbed8defcd0ba15aa31c91025eb296e")]
+        public string GetLoaderIo()
+        {
+            
+            return "loaderio-4dbed8defcd0ba15aa31c91025eb296e";
+        }
 
         [HttpGet]
         public async Task<IEnumerable<Vignette>> GetAll()
