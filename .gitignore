@@ -39,3 +39,5 @@ msbuild.wrn
 
 core-api/Settings.json
 camera-api/Settings.json
+
+node_modules
