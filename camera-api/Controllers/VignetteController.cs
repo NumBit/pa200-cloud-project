@@ -25,6 +25,12 @@ namespace camera_api.Controllers
             return rng.Next(1, 100);
         }
         
+        [HttpGet("/number")]
+        public int GetNumber()
+        {
+            return 5;
+        }
+        
         [HttpGet("/loaderio-4dbed8defcd0ba15aa31c91025eb296e")]
         public string GetLoaderIo()
         {
