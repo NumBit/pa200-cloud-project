@@ -47,7 +47,7 @@ jobs:
         directory: ./node-api/
         file_name: .env
 
-    # Run nodejs build and publish
+    # Run nodejs start and publish
     - name: npm install, build, and test
       run: |
         cd node-api
