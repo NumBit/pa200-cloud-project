@@ -38,14 +38,11 @@ jobs:
         json: ${{ secrets.DB_CONNECTION_JSON }}
         dir: 'node-api/'
 
-    # Create tables connection string
-    - name: Make envfile
-      uses: SpicyPizza/create-envfile@v1
-      with:
-        envkey_DEBUG: false
-        envkey_AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-        directory: ./node-api/
-        file_name: .env
+    - name: Create env file
+        run: |
+          touch ./node-api/.env
+          echo AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING  }} >> ./node-api/.env
+          cat .env
 
     # Run nodejs start and publish
     - name: npm install, build, and test
