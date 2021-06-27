@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/azure-node-workflow
 
 env:
   AZURE_WEBAPP_NAME: "pa200webapp-node"    # set this to your application's name
