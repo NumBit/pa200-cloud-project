@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: "pa200webapp-node"    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: './node-api/'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x' 
   RESOURCEGROUPNAME: "pa200-mnp"
   LOCATION: "West Europe"
@@ -17,7 +17,7 @@ env:
   SKU: "B1 Basic"
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
     # Checkout the repo
@@ -44,24 +44,63 @@ jobs:
         echo AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING  }} >> ./node-api/.env
         cat ./node-api/.env
 
-
-
     # Run nodejs start and publish
     - name: npm install, build, and test
       run: |
         cd node-api
         npm install
-        npm start
+        npm build --if-present
+        npm test --if-present
+
+    - name: Creating artifact directories
+      run: |
+        mkdir buildartifacts
+    # Archive build artifact
+    - name: Archive Application
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./buildartifacts/node-api.zip ./node-api/
+    # Uploading application to build artifact
+    - name: Upload Application to Build Artifact
+      continue-on-error: false
+      uses: actions/upload-artifact@v2
+      with:
+        name: buildartifacts
+        path: buildartifacts
+
     #
     #- name: Login to Azure
     #  uses: azure/login@v1
     #  continue-on-error: false
     #  with:
     #    creds: ${{ secrets.AZURE_NODE_CREDENTIALS }}
+  deploy:
+    name: Deploy to azure web app
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    # Downloading build artifact
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2
+      continue-on-error: false
+      with:
+        name: buildartifacts
+        path: buildartifacts
+    # Uzipping build artifacts
+    - name: unzipping build artifact
+      uses: montudor/action-zip@v0.1.0
+      with:
+       args: unzip -qq ./buildartifacts/node-api.zip -d .
+  
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
 
     - name: 'Deploy node api'
+      needs: build
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        #publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
