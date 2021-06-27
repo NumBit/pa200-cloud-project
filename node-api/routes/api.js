@@ -6,6 +6,7 @@ var dayjs = require("dayjs");
 const router = express.Router();
 
 const table = "vignettes";
+const container = "camera-photos";
 
 const cache = (duration) => {
     return (req, res, next) => {
@@ -26,14 +27,72 @@ const cache = (duration) => {
 };
 
 const tableService = azure.createTableService();
-tableService.createTableIfNotExists(table, function (error, result, response) {
-    if (!error) {
-        console.log(result.created);
-    }
-});
+tableService.createTableIfNotExists(
+    table,
+    function (error, result, response) {}
+);
+
+const blobService = azure.createBlobService();
+blobService.createContainerIfNotExists(
+    table,
+    function (error, result, response) {}
+);
+var sharedAccessPolicyWrite = {
+    AccessPolicy: {
+        Permissions: azure.BlobUtilities.SharedAccessPermissions.WRITE,
+        Start: dayjs(),
+        Expiry: dayjs().add(5, "minute"),
+    },
+};
+
+var sharedAccessPolicyRead = {
+    AccessPolicy: {
+        Permissions: azure.BlobUtilities.SharedAccessPermissions.READ,
+        Start: dayjs(),
+        Expiry: dayjs().add(1, "hour"),
+    },
+};
 
 router.get("/", cache(10), function (req, res, next) {
     res.json("API endpoint");
+});
+
+router.get("/upload/:ecv", function (req, res) {
+    const ecv = req.params.ecv;
+    const blob = `ecv${dayjs().toISOString()}.jpg`;
+    const sasToken = blobService.generateSharedAccessSignature(
+        container,
+        blob,
+        sharedAccessPolicyWrite
+    );
+    const url = blobService.getUrl(container, blob, sasToken);
+    res.json(url);
+});
+
+router.get("/getPhotos", function (req, res) {
+    blobService.listBlobsSegmented(
+        container,
+        null,
+        function (error, result, response) {
+            if (!error) {
+                res.json(result);
+            } else {
+                res.sendStatus(404);
+            }
+        }
+    );
+});
+
+router.get("/photo/:filename", function (req, res) {
+    const filename = req.params.filename;
+    const blob = filename;
+    const sasToken = blobService.generateSharedAccessSignature(
+        container,
+        blob,
+        sharedAccessPolicyRead
+    );
+    const url = blobService.getUrl(container, blob, sasToken);
+    res.json(url);
 });
 
 router.get("/allvignettes", cache(10), function (req, res) {
@@ -119,7 +178,7 @@ router.put("/vignette", function (req, res, next) {
         query,
         null,
         function (error, result, response) {
-            if (!error) {
+            if (!error && result.entries.length > 0) {
                 const maxrow =
                     Math.max(
                         ...result.entries.map((e) => {
