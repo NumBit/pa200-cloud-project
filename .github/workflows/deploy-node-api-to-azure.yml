@@ -42,7 +42,7 @@ jobs:
       run: |
         touch ./node-api/.env
         echo AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING  }} >> ./node-api/.env
-        cat .env
+        cat ./node-api/.env
 
     # Run nodejs start and publish
     - name: npm install, build, and test
