@@ -1,0 +1,60 @@
+name: Deploy node api to Azure 
+
+on:
+  push:
+    branches:
+      - master
+      - feature/azure-node-workflow
+
+env:
+  AZURE_WEBAPP_NAME: "pa200-webapp-node-api"    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: './node-api/'      # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '14.x' 
+  RESOURCEGROUPNAME: "pa200-mnp"
+  LOCATION: "West Europe"
+  HOSTINGPLANNAME: "ASP-pa200mnp-84d2"
+  APPINSIGHTLOCATION: "West Europe"
+  SKU: "B1 Basic"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the repo
+    - uses: actions/checkout@master
+
+    # Setup .NET Core SDK
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        dotnet-version: ${{ env.NODE_VERSION }} 
+
+    # Create connection string
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@1.1.2
+      with:
+        name: "Settings.json"
+        json: ${{ secrets.DB_CONNECTION_JSON }}
+        dir: 'node-api/'
+
+    # Run dotnet build and publish
+    - name: npm install, build, and test
+      run: |
+        cd node-api
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+    #
+    #- name: Login to Azure
+    #  uses: azure/login@v1
+    #  continue-on-error: false
+    #  with:
+    #    creds: ${{ secrets.AZURE_NODE_CREDENTIALS }}
+
+    - name: 'Deploy node api'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
