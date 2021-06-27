@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "core-api", "core-api\core-a
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "front-end", "front-end\front-end.csproj", "{784A09FC-9601-4029-AC54-A4DCA2EE2047}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "camera-api", "camera-api\camera-api.csproj", "{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "camera-api", "camera-api\camera-api.csproj", "{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "camera-api-v2", "camera-api-v2\camera-api-v2.csproj", "{8363D401-466E-453F-9C97-F8FCCABF80CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{63962CE6-5D4E-437A-917A-7FD3AF8D4615}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BCCF4EF-1123-4C2B-8E63-B5EF20C36E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8363D401-466E-453F-9C97-F8FCCABF80CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8363D401-466E-453F-9C97-F8FCCABF80CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8363D401-466E-453F-9C97-F8FCCABF80CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8363D401-466E-453F-9C97-F8FCCABF80CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63962CE6-5D4E-437A-917A-7FD3AF8D4615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63962CE6-5D4E-437A-917A-7FD3AF8D4615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63962CE6-5D4E-437A-917A-7FD3AF8D4615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63962CE6-5D4E-437A-917A-7FD3AF8D4615}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
