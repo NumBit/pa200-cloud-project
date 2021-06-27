@@ -39,10 +39,10 @@ jobs:
         dir: 'node-api/'
 
     - name: Create env file
-        run: |
-          touch ./node-api/.env
-          echo AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING  }} >> ./node-api/.env
-          cat .env
+      run: |
+        touch ./node-api/.env
+        echo AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING  }} >> ./node-api/.env
+        cat .env
 
     # Run nodejs start and publish
     - name: npm install, build, and test
