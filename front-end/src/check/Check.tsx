@@ -1,72 +1,161 @@
 import React, { useState } from 'react';
-import { Button, Cascader, Descriptions, Form, Input, message, Spin, Tag } from 'antd';
+import { Button, Descriptions, Form, Input, message, Spin, Table, Tag } from 'antd';
 import { LoadingOutlined } from "@ant-design/icons";
+import axios from 'axios';
+import dayjs from 'dayjs';
+
+export interface Vignettes {
+    entries: Entry[];
+    continuationToken: null;
+}
+
+export interface Entry {
+    PartitionKey: any;
+    RowKey: any;
+    Timestamp: any;
+    ValidDays: ValidDays;
+    ValidFrom: any;
+}
+export interface ValidDays {
+    _: number;
+}
+
+
 
 export default function Check() {
     const [showLoading, setShowLoading] = useState(false);
-    const [showResult, setshowResult] = useState(false);
-
-    const formatDate = (date: string) => {
-        const newDate = new Date(date);
-        let options: Intl.DateTimeFormatOptions = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        };
-
-        return newDate.toLocaleDateString("en-US", options);
-    };
-
-    const options = [{ label: "Platnosť 10 dní", value: 10 }, { label: "Platnosť 30 dní", value: 30 }, { label: "Platnosť 1 rok", value: 365 }];
+    const [showResult, setShowResult] = useState(false);
+    const [resData, setResData] = useState<Vignettes>();
+    const url = process.env.REACT_APP_CONNECTION_URL;
 
     const layout = {
         labelCol: { span: 8 },
-        wrapperCol: { span: 8 },
+        wrapperCol: { span: 8 }
     };
 
     const onFinish = async (values: any) => {
+
         setShowLoading(true);
-        /*
-                const article = { title: 'React POST Request Example' };
-                const response = await axios.post('https://reqres.in/api/articles', article);
-                this.setState({ articleId: response.data.id });*/
-        console.log(values);
+        await axios.get(url + "check/" + values.spz)
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+            }).catch(() => message.error("Skontrolujte ŠPZ")).finally(() => setShowLoading(false));
+        console.log("values");
+        await axios.get(url + "vignettes/" + values.spz)
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+                setResData(res.data);
+            }).catch(() => message.error("Skontrolujte ŠPZ")).finally(() => setShowLoading(false));
         setShowLoading(false);
-        setshowResult(true);
+        setShowResult(true);
     };
     const onFinishFailed = () => {
         message.error("Stav nezistený");
     };
 
     if (showResult) {
-        return (<div>
-            <h1>Záznam</h1>
-            <Descriptions
-                bordered
-                column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
-            >
-                <Descriptions.Item label="ŠPZ">{"XY123AB"}</Descriptions.Item>
-                <Descriptions.Item label="Platná">
-                    <Tag
+        if (!resData || resData?.entries.length === 0) {
+            return (<h1>Žiaden záznam</h1>)
+        }
+
+        const dataSource = resData?.entries.map((e: Entry) => {
+            return {
+                ecv: e.PartitionKey,
+                Key: e.RowKey,
+                Bought: e.Timestamp,
+                ValidDays: e.ValidDays,
+                ValidFrom: e.ValidFrom,
+                PartitionKey: e.PartitionKey,
+                RowKey: e.RowKey,
+                Timestamp: e.Timestamp
+            };
+        });
+
+        const columns = [
+            {
+                title: "EČV",
+                dataIndex: "ecv",
+                key: "ecv",
+                render: (e: any) => e._,
+            },
+            {
+                title: "Kupené",
+                dataIndex: "Bought",
+                key: "Bought",
+                render: (e: any) => dayjs(e._).toString(),
+            },
+            {
+                title: "Platné od",
+                dataIndex: "ValidFrom",
+                key: "ValidFrom",
+                render: (e: any) => dayjs(e._).toString(),
+            },
+            {
+                title: "Platné dní",
+                dataIndex: "ValidDays",
+                key: "ValidDays",
+                render: (e: ValidDays) => e._,
+            },
+            {
+                title: "Platnosť",
+                dataIndex: "ValidFrom",
+                key: "ValidFrom",
+                render: (_: any, entry: Entry) => {
+                    const validity = dayjs(entry.ValidFrom._).isBefore(dayjs()) && dayjs().isBefore(dayjs(entry.ValidFrom._).add(
+                        +entry.ValidDays._,
+                        "day"
+                    ));
+                    return <Tag
                         color={
-                            true
+                            validity
                                 ? "green"
                                 : "volcano"
                         }
                     >
-                        {true ? "Platná" : "Neplatná"}
-                    </Tag></Descriptions.Item>
-                <Descriptions.Item label="Platnosť od">{"formatDate()"}</Descriptions.Item>
-                <Descriptions.Item label="Platnosť do">{"formatDate()"}</Descriptions.Item>
-            </Descriptions>
-        </div>
+                        {validity ? "Platná" : "Neplatná"}
+                    </Tag>
+                }
+                ,
+            },
+        ]
 
-
-
+        return (
+            <div>
+                <h1>Záznam</h1>
+                <Table dataSource={dataSource} columns={columns}></Table>
+            </div>
         );
+        /*
+                return (<div>
+                    <h1>Záznam</h1>
+                    <h2>{ }</h2>
+                    {resData?.entries.map(e => <Descriptions
+                        key={+e.RowKey}
+                        bordered
+                        column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+                    >
+                        <Descriptions.Item label="ŠPZ">{e.PartitionKey}</Descriptions.Item>
+                        <Descriptions.Item label="Platná">
+                            <Tag
+                                color={
+                                    dayjs(e.ValidFrom._).isBefore(dayjs()) && dayjs().isBefore(dayjs(e.ValidFrom._).add(
+                                        +e.ValidDays,
+                                        "day"
+                                    ))
+                                        ? "green"
+                                        : "volcano"
+                                }
+                            >
+                                {true ? "Platná" : "Neplatná"}
+                            </Tag></Descriptions.Item>
+                        <Descriptions.Item label="Platnosť od">{e.ValidFrom}</Descriptions.Item>
+                        <Descriptions.Item label="Platnosť dní">{e.ValidDays}</Descriptions.Item>
+                    </Descriptions>)}
+        
+                </div>
+                );*/
     }
 
     return (

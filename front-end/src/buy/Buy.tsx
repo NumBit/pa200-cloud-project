@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Cascader, Form, Input, message, Spin } from 'antd';
+import { Button, Cascader, DatePicker, Form, Input, message, Space, Spin } from 'antd';
 import { LoadingOutlined } from "@ant-design/icons";
+import axios from 'axios';
 
-export default function Buy(){
+export default function Buy() {
     const [showLoading, setShowLoading] = useState(false);
     //const [createCourse] = useMutation(CREATE_COURSE);
     //const [createEnrollment] = useMutation(CREATE_ENROLMENT);
-
-    const options = [{label: "Platnosť 10 dní", value:10},{label:"Platnosť 30 dní", value:30},{label:"Platnosť 1 rok", value:365}];
+    const url = process.env.REACT_APP_CONNECTION_URL;
+    const options = [{ label: "Platnosť 10 dní", value: 10 }, { label: "Platnosť 30 dní", value: 30 }, { label: "Platnosť 1 rok", value: 365 }];
 
     const layout = {
         labelCol: { span: 8 },
@@ -16,13 +17,25 @@ export default function Buy(){
 
     const onFinish = async (values: any) => {
         setShowLoading(true);
-/*
-        const article = { title: 'React POST Request Example' };
-        const response = await axios.post('https://reqres.in/api/articles', article);
-        this.setState({ articleId: response.data.id });*/
-        console.log(values);
-        setShowLoading(false);
-        message.success("E-známka bola zakúpená");
+        const vignette = {
+            PartitionKey: values.spz,
+            ValidFrom: values.date,
+            ValidDays: values.valid[0]
+        };
+
+        await axios.put(url + "vignette", vignette, { responseType: "json" })
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+                message.success("E-známka bola zakúpená");
+            }).catch(() => message.error("Skontrolujte ŠPZ")).finally(() => setShowLoading(false));
+        /*
+        
+                const article = { title: 'React POST Request Example' };
+                const response = await axios.post('https://reqres.in/api/articles', article);
+                this.setState({ articleId: response.data.id });*/
+
+
     };
     const onFinishFailed = () => {
         message.error("Skontrolujte ŠPZ");
@@ -58,11 +71,23 @@ export default function Buy(){
                         rules={[
                             {
                                 required: true,
-                                message: "Vyberte dobu platnosti",
+                                message: "Vyber dobu platnosti",
                             },
                         ]}
                     >
-                        <Cascader size="middle" options={options} />
+                        <Cascader placeholder="Vyber dobu platnosti" options={options} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Platnosť od"
+                        name="date"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vyber dátum",
+                            },
+                        ]}
+                    >
+                        <DatePicker placeholder="Vyber dátum" />
                     </Form.Item>
                     <Form.Item label="Kúpiť">
                         <Button htmlType="submit" type="primary">
