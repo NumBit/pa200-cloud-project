@@ -27,6 +27,10 @@ code {
         monospace;
 }
 
+#root, .ant-layout{
+    height:  100%;
+}
+
 .App {
     text-align: center;
 }

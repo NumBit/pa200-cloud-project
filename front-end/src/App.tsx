@@ -2,12 +2,15 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import "./App.css";
-
+import Buy from './buy/Buy';
+import Home from './home/Home';
+import Admin from './admin/Admin';
+import MenuBar from './MenuBar';
+import Check from './check/Check';
 
 const { Header, Content, Footer } = Layout;
 
@@ -16,29 +19,22 @@ function App() {
     <Router>
       <Layout className="layout">
         <Header>
-          <div className="logo">
-            <h1 className="logo-text">
-              <Link to="/">E-známka</Link>
-            </h1>
-          </div>
-          <Menu theme="dark" mode="horizontal">
-            <Menu.Item className="menu-item" key="/buy">Kúpiť</Menu.Item>
-          </Menu>
-          <Menu theme="dark" mode="horizontal">
-            <Menu.Item className="menu-item" key="/check">Overiť</Menu.Item>
-          </Menu>
+          <MenuBar />
         </Header>
         <Content style={{ padding: '0 50px' }}>
           <div className="site-layout-content">
             <Switch>
               <Route path="/buy">
-                <h1>BUY</h1>
+                <Buy />
               </Route>
               <Route path="/check">
-                <h1>CHECK</h1>
+                <Check />
+              </Route>
+              <Route path="/admin">
+                <Admin />
               </Route>
               <Route path="/">
-                <h1>HOME</h1>
+                <Home />
               </Route>
             </Switch>
           </div>
