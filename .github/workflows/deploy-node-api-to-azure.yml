@@ -7,7 +7,7 @@ on:
       - feature/azure-node-workflow
 
 env:
-  AZURE_WEBAPP_NAME: "pa200-webapp-node-api"    # set this to your application's name
+  AZURE_WEBAPP_NAME: "pa200webapp-node"    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: './node-api/'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x' 
   RESOURCEGROUPNAME: "pa200-mnp"
