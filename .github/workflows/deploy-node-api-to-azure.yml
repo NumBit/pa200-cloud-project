@@ -74,6 +74,7 @@ jobs:
     #  continue-on-error: false
     #  with:
     #    creds: ${{ secrets.AZURE_NODE_CREDENTIALS }}
+
   deploy:
     name: Deploy to azure web app
     needs: build
@@ -98,7 +99,6 @@ jobs:
         creds: ${{secrets.AZURE_CREDENTIALS}}
 
     - name: 'Deploy node api'
-      needs: build
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
