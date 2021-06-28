@@ -1,7 +1,7 @@
 [![Deploy node api to Azure](https://github.com/ndopj/pa200-cloud-project/actions/workflows/deploy-node-api-to-azure.yml/badge.svg)](https://github.com/ndopj/pa200-cloud-project/actions/workflows/deploy-node-api-to-azure.yml)
 
 # Introduction 
-PA200 clous project 
+PA200 Cloud Computing project 
 
 # Team
 Peter Baltazarovič 	- 456213 
