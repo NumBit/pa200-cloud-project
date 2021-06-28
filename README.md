@@ -5,6 +5,8 @@ PA200 clous project
 
 # Team
 Peter Baltazarovič 	- 456213 
+
 Márius Molčány 	- 456350
+
 Norbert Dopjera	- 456355
 
