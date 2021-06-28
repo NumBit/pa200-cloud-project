@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 export default function Admin() {
     const [showLoading, setShowLoading] = useState(false);
     const [showResult, setShowResult] = useState(false);
-    const [resData, setResData] = useState<DataQuery>();
+    const [resData, setResData] = useState();
     const url = process.env.REACT_APP_CONNECTION_URL;
 
     useEffect(() => {
