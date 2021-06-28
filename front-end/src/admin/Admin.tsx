@@ -1,37 +1,41 @@
-import { Button, Table } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Button, Table, Tag } from 'antd';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 
 
-export default function Admin(){
-    //const { loading, error, data, refetch } =        useQuery<allSemestersReply>(SEMESTER_LIST_QUERY);
+export default function Admin() {
+    const [showLoading, setShowLoading] = useState(false);
+    const [showResult, setShowResult] = useState(false);
+    const [resData, setResData] = useState<DataQuery>();
+    const url = process.env.REACT_APP_CONNECTION_URL;
 
     useEffect(() => {
-        //fetch();
-    }, []);
+        async function fetchMyAPI() {
+            setShowLoading(true);
+            await axios.get(url + "check/")
+                .then(res => {
+                    console.log(res);
+                    console.log(res.data);
+                });
+            console.log("values");
+            await axios.get(url + "vignettes/")
+                .then(res => {
+                    console.log(res);
+                    console.log(res.data);
+                    setResData(res.data);
+                });
+            setShowLoading(false);
+            setShowResult(true);
+        }
+        fetchMyAPI()
+    }, [])
 
-/*
-    if (loading)
-        return (
-            <Skeleton
-                className={"detail-skeleton"}
-                active
-                paragraph={{ rows: 13 }}
-            />
-        );
-*/
+    const DataRows = [{ spz: "KK167CL", platnost: "Platná", link: "https://www.driving.co.uk/s3/st-driving-prod/uploads/2015/07/SUPERB-ESTATE-REVIEW-HEADER.jpg" },
+    { spz: "BL123AX", platnost: "Neplatná", link: "https://www.driving.co.uk/s3/st-driving-prod/uploads/2015/07/SUPERB-ESTATE-REVIEW-HEADER.jpg" },
+    { spz: "KE973TE", platnost: "Neplatná", link: "https://www.driving.co.uk/s3/st-driving-prod/uploads/2015/07/SUPERB-ESTATE-REVIEW-HEADER.jpg" }]
 
- //   if (error || !data) return <ServerError />;
-
-/*
-    const DataRows = data.rows.map((row: Row) => {
-        return {
-            id: row.id,
-            spz: row.spz,
-        };
-    });
-*/
     let columns = [
         {
             title: "Špz",
@@ -42,18 +46,29 @@ export default function Admin(){
             title: "Platnosť",
             dataIndex: "platnost",
             key: "platnost",
+            render: (platnost: string,) => {
+                const validity = platnost.includes("Platná");
+                return <Tag
+                    color={
+                        validity
+                            ? "green"
+                            : "volcano"
+                    }
+                >
+                    {validity ? "Platná" : "Neplatná"}
+                </Tag>
+            }
         },
         {
-            title: "",
-            dataIndex: "id",
-            key: "id",
+            title: "Fotka",
+            dataIndex: "link",
+            key: "link",
             width: 20,
-            render: (id: number) => {
-                const path = `semester/${id}/edit`;
+            render: (link: string) => {
                 return (
-                    <Link to={path}>
-                        <Button> Edit </Button>
-                    </Link>
+                    <a target="_blank" href={link}>
+                        <Button> Otvoriť </Button>
+                    </a>
                 );
             },
         },
@@ -62,7 +77,7 @@ export default function Admin(){
 
     return (
         <>
-            <Table dataSource={[]} columns={columns} />
+            <Table dataSource={DataRows} columns={columns} />
         </>
-    ); 
+    );
 }

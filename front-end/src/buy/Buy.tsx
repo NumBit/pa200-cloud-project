@@ -5,8 +5,6 @@ import axios from 'axios';
 
 export default function Buy() {
     const [showLoading, setShowLoading] = useState(false);
-    //const [createCourse] = useMutation(CREATE_COURSE);
-    //const [createEnrollment] = useMutation(CREATE_ENROLMENT);
     const url = process.env.REACT_APP_CONNECTION_URL;
     const options = [{ label: "Platnosť 10 dní", value: 10 }, { label: "Platnosť 30 dní", value: 30 }, { label: "Platnosť 1 rok", value: 365 }];
 
@@ -29,13 +27,6 @@ export default function Buy() {
                 console.log(res.data);
                 message.success("E-známka bola zakúpená");
             }).catch(() => message.error("Skontrolujte ŠPZ")).finally(() => setShowLoading(false));
-        /*
-        
-                const article = { title: 'React POST Request Example' };
-                const response = await axios.post('https://reqres.in/api/articles', article);
-                this.setState({ articleId: response.data.id });*/
-
-
     };
     const onFinishFailed = () => {
         message.error("Skontrolujte ŠPZ");
