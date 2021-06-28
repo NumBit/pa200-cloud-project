@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
@@ -61,11 +61,11 @@ var sharedAccessPolicyRead = {
     },
 };
 
-app.get("/", cache(10), function (req, res, next) {
+app.get("/", cache(10), async function (req, res, next) {
     res.json("API endpoint");
 });
 
-app.get("/upload/:ecv", function (req, res) {
+app.get("/upload/:ecv", async (req, res) => {
     const ecv = req.params.ecv;
     const blob = `ecv${dayjs().toISOString()}.jpg`;
     const sasToken = blobService.generateSharedAccessSignature(
@@ -77,7 +77,7 @@ app.get("/upload/:ecv", function (req, res) {
     res.json(url);
 });
 
-app.get("/getPhotos", function (req, res) {
+app.get("/getPhotos", async (req, res) => {
     blobService.listBlobsSegmented(
         container,
         null,
@@ -91,7 +91,7 @@ app.get("/getPhotos", function (req, res) {
     );
 });
 
-app.get("/photo/:filename", function (req, res) {
+app.get("/photo/:filename", async (req, res) => {
     const filename = req.params.filename;
     const blob = filename;
     const sasToken = blobService.generateSharedAccessSignature(
@@ -103,7 +103,7 @@ app.get("/photo/:filename", function (req, res) {
     res.json(url);
 });
 
-app.get("/allvignettes", cache(10), function (req, res) {
+app.get("/allvignettes", cache(10), async (req, res) => {
     const query = new azure.TableQuery();
 
     tableService.queryEntities(
@@ -120,7 +120,7 @@ app.get("/allvignettes", cache(10), function (req, res) {
     );
 });
 
-app.get("/vignettes/:ecv", cache(10), function (req, res) {
+app.get("/vignettes/:ecv", cache(10), async (req, res) => {
     const ecv = req.params.ecv;
     const query = new azure.TableQuery().where("PartitionKey eq ?", ecv);
 
@@ -138,7 +138,7 @@ app.get("/vignettes/:ecv", cache(10), function (req, res) {
     );
 });
 
-app.get("/check/:ecv", cache(10), function (req, res) {
+app.get("/check/:ecv", cache(10), async (req, res) => {
     const ecv = req.params.ecv;
     const query = new azure.TableQuery().where("PartitionKey eq ?", ecv);
 
@@ -153,9 +153,6 @@ app.get("/check/:ecv", cache(10), function (req, res) {
                         element.ValidDays._,
                         "day"
                     );
-                    console.log(dayjs(element.ValidFrom._));
-                    console.log(dayjs());
-                    console.log(validTo);
                     return (
                         dayjs(element.ValidFrom._).isBefore(dayjs()) &&
                         dayjs().isBefore(validTo)
@@ -170,7 +167,7 @@ app.get("/check/:ecv", cache(10), function (req, res) {
     );
 });
 
-app.put("/vignette", function (req, res, next) {
+app.put("/vignette", async (req, res, next) => {
     const entGen = azure.TableUtilities.entityGenerator;
     if (!req.body.PartitionKey || !req.body.ValidFrom || !req.body.ValidDays) {
         return res.status(400).json({ error: "params missing!" });
@@ -190,13 +187,11 @@ app.put("/vignette", function (req, res, next) {
                 const maxrow =
                     Math.max(
                         ...result.entries.map((e) => {
-                            console.log(+e.RowKey._);
                             return +e.RowKey._;
                         })
                     ) + 1;
                 rowKey = maxrow.toString();
             }
-            console.log(rowKey);
             const vignette = {
                 PartitionKey: entGen.String(req.body.PartitionKey),
                 RowKey: entGen.String(rowKey),
@@ -219,7 +214,7 @@ app.put("/vignette", function (req, res, next) {
     );
 });
 
-app.get("/vignette/:row", cache(10), function (req, res) {
+app.get("/vignette/:row", cache(10), async (req, res) => {
     const row = req.params.row;
     tableService.retrieveEntity(
         table,
@@ -235,7 +230,7 @@ app.get("/vignette/:row", cache(10), function (req, res) {
     );
 });
 
-app.use(function (req, res, next) {
+app.use(async (req, res, next) => {
     res.status(404).json("Sorry");
 });
 

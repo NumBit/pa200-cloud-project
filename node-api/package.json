@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start:old": "node ./bin/www",
     "start": "node index.js",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "azure-storage": "^2.10.4",
