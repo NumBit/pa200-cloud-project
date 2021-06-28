@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: "eznamka"    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: './front-end/build/'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: './front-end/'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x' 
   RESOURCEGROUPNAME: "pa200-mnp"
   LOCATION: "West Europe"
