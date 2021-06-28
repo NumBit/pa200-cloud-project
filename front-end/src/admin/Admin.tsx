@@ -2,13 +2,7 @@ import { Button, Table } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-interface Row {
-    spz: string;
-}
 
-interface DataQuery {
-    rows: Row[];
-}
 
 export default function Admin(){
     //const { loading, error, data, refetch } =        useQuery<allSemestersReply>(SEMESTER_LIST_QUERY);
