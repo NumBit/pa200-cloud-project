@@ -127,35 +127,6 @@ export default function Check() {
                 <Table dataSource={dataSource} columns={columns}></Table>
             </div>
         );
-        /*
-                return (<div>
-                    <h1>Záznam</h1>
-                    <h2>{ }</h2>
-                    {resData?.entries.map(e => <Descriptions
-                        key={+e.RowKey}
-                        bordered
-                        column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
-                    >
-                        <Descriptions.Item label="ŠPZ">{e.PartitionKey}</Descriptions.Item>
-                        <Descriptions.Item label="Platná">
-                            <Tag
-                                color={
-                                    dayjs(e.ValidFrom._).isBefore(dayjs()) && dayjs().isBefore(dayjs(e.ValidFrom._).add(
-                                        +e.ValidDays,
-                                        "day"
-                                    ))
-                                        ? "green"
-                                        : "volcano"
-                                }
-                            >
-                                {true ? "Platná" : "Neplatná"}
-                            </Tag></Descriptions.Item>
-                        <Descriptions.Item label="Platnosť od">{e.ValidFrom}</Descriptions.Item>
-                        <Descriptions.Item label="Platnosť dní">{e.ValidDays}</Descriptions.Item>
-                    </Descriptions>)}
-        
-                </div>
-                );*/
     }
 
     return (
